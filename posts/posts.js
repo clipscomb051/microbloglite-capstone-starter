@@ -45,7 +45,8 @@ function populatePostcards(posts) {
                 </div>
                 <p class="text">${formatDate(currentPost.createdAt)}</p>
                 <p class="text"><strong>Likes:</strong> ${currentPost.likes.length}</p>
-                <button onclick="createLike('${currentPost._id}')" id="like_button" class="btn btn-primary btn-sm">LIKE</button>
+                <button onclick="createLike('${currentPost._id}')" id="likeButton" class="btn btn-primary btn-sm">LIKE</button>
+                
             </div>
         `
     }
@@ -53,11 +54,43 @@ function populatePostcards(posts) {
     postCards.innerHTML+= html
 }
 
-function createLike(postId){
-    console.log("Like button clicked for post id#" + postId)
-    
+function createLike(postIdString){
+    const json = {
+        postId: postIdString
+    }
+    console.log("Like button clicked for post id#" + postIdString)
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${getLoginData().token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+    }
+    //fetch (website/api/likes, options)
+    fetch (`http://microbloglite.us-east-2.elasticbeanstalk.com/api/likes`, options)
+    .then (response => response.json())
+    .then(data => console.log(data))
+
 }
-    
+// function deleteLike(likeId) {
+//     const json = {
+//         likeId: likeIdString
+//     }
+//     console.log("like removed for like id#" + likeIdString)
+//     const options = {
+//         method: 'DELETE',
+//         headers: {
+//             'Authorization': `Bearer ${getLoginData().token}`,
+//             'Content-Type':'application/json'
+
+//         },
+//         body: JSON.stringify(json)
+//     }
+//     fetch(`http://microbloglite.us-east-2.elasticbeanstalk.com/api/likes/{likeId}`)
+//     .then (response =>response.json())
+//     .then(data => console.log(data))
+// }
 
 
 function formatDate(timestamp) {
